@@ -1,0 +1,93 @@
+## --------------------------------------------------
+## Visual Studio / .NET (VS 2022)
+## Source: https://github.com/github/gitignore
+## --------------------------------------------------
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.env
+
+# Visual Studio cache/options
+.vs/
+
+# Build results
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Platform-specific build folders
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+ARM/
+ARM64/
+bld/
+
+# .NET Core / SDK artifacts
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Test results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*.trx
+*.coverage
+*.coveragexml
+
+# BenchmarkDotNet
+BenchmarkDotNet.Artifacts/
+
+# NuGet
+*.nupkg
+*.snupkg
+**/[Pp]ackages/
+!**/[Pp]ackages/build/
+.nuget/NuGet.Config
+.nuget/NuGet.exe
+
+# ASP.NET
+ScaffoldingReadMe.txt
+appsettings.Development.json
+
+# Publish output
+**/[Pp]ublish/
+*.pubxml
+*.publishproj
+
+# Rider / ReSharper
+_ReSharper*/
+*.DotSettings.user
+
+# Code coverage tools
+coverage*.json
+coverage*.xml
+coverage*.info
+*.dotCover
+
+# NCrunch
+_NCrunch_*
+.*crunch*.local.xml
+nCrunchTemp_*
+
+# Visual C++
+*.obj
+*.pdb
+*.ilk
+*.iobj
+*.ipdb
+*.pch
+*.idb
+ipch/
+
+# Windows / OS files
+Thumbs.db
+Desktop.ini

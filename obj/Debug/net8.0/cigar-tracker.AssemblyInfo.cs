@@ -10,10 +10,11 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("b43261ca-c7c4-4051-83cc-cb2b489a2811")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("cigar-tracker")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e6cc466009d01343c5319fd173090578ac62b565")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+610ec181934df79a0d9948589e826d2a0dd99755")]
 [assembly: System.Reflection.AssemblyProductAttribute("cigar-tracker")]
 [assembly: System.Reflection.AssemblyTitleAttribute("cigar-tracker")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

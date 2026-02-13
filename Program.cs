@@ -1,3 +1,5 @@
+using Azure.Identity;
+using Azure.Extensions.AspNetCore.Configuration.Secrets;
 using cigar_tracker.Components;
 using cigar_tracker.Services;
 using Microsoft.AspNetCore.Authentication;
@@ -7,26 +9,42 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+
+// Conditionally add Azure Key Vault as a configuration source in non-development environments
+if (!builder.Environment.IsDevelopment())
+{
+	var keyVaultName = builder.Configuration["KeyVaultName"];
+	if (!string.IsNullOrEmpty(keyVaultName))
+	{
+		var keyVaultUri = new Uri($"https://{keyVaultName}.vault.azure.net/");
+		builder.Configuration.AddAzureKeyVault(keyVaultUri, new DefaultAzureCredential());
+	}
+}
+
+
+
+
 // Add authentication services
 builder.Services.AddAuthentication(options =>
-{
-    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-})
-.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
-.AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
-{
-    options.Authority = "https://accounts.google.com";
-    options.ClientId = builder.Configuration["GoogleAuth:ClientId"] ?? "YOUR_GOOGLE_CLIENT_ID";
-    options.ClientSecret = builder.Configuration["GoogleAuth:ClientSecret"] ?? "YOUR_GOOGLE_CLIENT_SECRET";
-    options.ResponseType = OpenIdConnectResponseType.Code;
-    options.Scope.Add("openid");
-    options.Scope.Add("profile");
-    options.Scope.Add("email");
-    options.SaveTokens = true;
-    options.GetClaimsFromUserInfoEndpoint = true;
-    options.TokenValidationParameters.NameClaimType = "name";
-});
+    {
+        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+    })
+    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
+    {
+        options.Authority = "https://accounts.google.com";
+        options.ClientId = builder.Configuration["GoogleAuthClientId"] ?? "YOUR_GOOGLE_CLIENT_ID";
+        options.ClientSecret = builder.Configuration["GoogleAuthClientSecret"] ?? "YOUR_GOOGLE_CLIENT_SECRET";
+        options.ResponseType = OpenIdConnectResponseType.Code;
+        options.Scope.Add("openid");
+        options.Scope.Add("profile");
+        options.Scope.Add("email");
+        options.SaveTokens = true;
+        options.GetClaimsFromUserInfoEndpoint = true;
+        options.TokenValidationParameters.NameClaimType = "name";
+    });
 
 // Add authorization
 builder.Services.AddAuthorization();
