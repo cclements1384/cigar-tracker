@@ -1,0 +1,41 @@
+{
+  "Files": [
+    {
+      "Id": "/home/ccleme/.openclaw/workspace/personal/cigar-tracker/obj/Debug/net8.0/scopedcss/projectbundle/cigar-tracker.bundle.scp.css",
+      "PackagePath": "staticwebassets/cigar-tracker.bundle.scp.css"
+    },
+    {
+      "Id": "/home/ccleme/.openclaw/workspace/personal/cigar-tracker/wwwroot/app.css",
+      "PackagePath": "staticwebassets/app.css"
+    },
+    {
+      "Id": "/home/ccleme/.openclaw/workspace/personal/cigar-tracker/wwwroot/bootstrap/bootstrap.min.css",
+      "PackagePath": "staticwebassets/bootstrap/bootstrap.min.css"
+    },
+    {
+      "Id": "/home/ccleme/.openclaw/workspace/personal/cigar-tracker/wwwroot/bootstrap/bootstrap.min.css.map",
+      "PackagePath": "staticwebassets/bootstrap/bootstrap.min.css.map"
+    },
+    {
+      "Id": "/home/ccleme/.openclaw/workspace/personal/cigar-tracker/wwwroot/favicon.png",
+      "PackagePath": "staticwebassets/favicon.png"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.build.cigar-tracker.props",
+      "PackagePath": "build\\cigar-tracker.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.buildMultiTargeting.cigar-tracker.props",
+      "PackagePath": "buildMultiTargeting\\cigar-tracker.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.buildTransitive.cigar-tracker.props",
+      "PackagePath": "buildTransitive\\cigar-tracker.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.cigar-tracker.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    }
+  ],
+  "ElementsToRemove": []
+}
