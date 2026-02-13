@@ -32,7 +32,7 @@
                     <div class="col-md-6 mb-3">
                         <label for="datesmoked" class="form-label">Date Smoked</label>
                         <input type="date" class="form-control" id="datesmoked" 
-                               @bind="dateSmoked" required />
+                               @bind="dateSmokedValue" required />
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="rating" class="form-label">Rating (1-10)</label>
@@ -107,7 +107,7 @@
 @code {
     private List<Cigar> cigars = new();
     private Cigar newCigar = new();
-    private string dateSmoked = DateTime.Today.ToString("yyyy-MM-dd");
+    private DateTime dateSmokedValue = DateTime.Today;
 
     protected override void OnInitialized()
     {
@@ -126,12 +126,12 @@
             return;
         }
 
-        newCigar.DateSmoked = DateTime.Parse(dateSmoked);
+        newCigar.DateSmoked = dateSmokedValue;
         CigarService.AddCigar(newCigar);
         
         // Reset form
         newCigar = new();
-        dateSmoked = DateTime.Today.ToString("yyyy-MM-dd");
+        dateSmokedValue = DateTime.Today;
         LoadCigars();
     }
 
