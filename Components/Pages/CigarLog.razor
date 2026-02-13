@@ -2,12 +2,23 @@
 @rendermode InteractiveServer
 @using cigar_tracker.Models
 @using cigar_tracker.Services
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
 @inject CigarService CigarService
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <PageTitle>Cigar Log</PageTitle>
 
 <div class="container">
-    <h1>🔥 Cigar Log</h1>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>🔥 Cigar Log</h1>
+        <div>
+            <span class="me-3">Welcome, @userEmail</span>
+            <form action="/logout" method="post" style="display: inline;">
+                <button type="submit" class="btn btn-sm btn-outline-danger">Logout</button>
+            </form>
+        </div>
+    </div>
     
     <div class="card mb-4">
         <div class="card-header">
@@ -108,9 +119,18 @@
     private List<Cigar> cigars = new();
     private Cigar newCigar = new();
     private DateTime dateSmokedValue = DateTime.Today;
+    private string userEmail = "User";
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        
+        if (user?.Identity?.IsAuthenticated ?? false)
+        {
+            userEmail = user.FindFirst("email")?.Value ?? user.FindFirst("name")?.Value ?? "User";
+        }
+        
         LoadCigars();
     }
 

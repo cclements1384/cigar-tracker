@@ -1,6 +1,13 @@
 ﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
+    <div class="container-fluid d-flex justify-content-between">
         <a class="navbar-brand" href="">cigar-tracker</a>
+        <AuthorizeView>
+            <NotAuthorized>
+                <form action="/login" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-sm btn-primary">Login with Google</button>
+                </form>
+            </NotAuthorized>
+        </AuthorizeView>
     </div>
 </div>
 
