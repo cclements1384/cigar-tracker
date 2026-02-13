@@ -1,0 +1,154 @@
+@page "/cigar-log"
+@rendermode InteractiveServer
+@using cigar_tracker.Models
+@using cigar_tracker.Services
+@inject CigarService CigarService
+
+<PageTitle>Cigar Log</PageTitle>
+
+<div class="container">
+    <h1>🔥 Cigar Log</h1>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Log a New Cigar</h5>
+        </div>
+        <div class="card-body">
+            <form @onsubmit="AddCigar">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="brand" class="form-label">Brand</label>
+                        <input type="text" class="form-control" id="brand" 
+                               @bind="newCigar.Brand" required />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="size" class="form-label">Size (e.g., Robusto, Churchill)</label>
+                        <input type="text" class="form-control" id="size" 
+                               @bind="newCigar.Size" required />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="datesmoked" class="form-label">Date Smoked</label>
+                        <input type="date" class="form-control" id="datesmoked" 
+                               @bind="dateSmoked" required />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="rating" class="form-label">Rating (1-10)</label>
+                        <input type="number" class="form-control" id="rating" 
+                               @bind="newCigar.Rating" min="1" max="10" required />
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="notes" class="form-label">Notes</label>
+                    <textarea class="form-control" id="notes" rows="3" 
+                              @bind="newCigar.Notes" placeholder="Any thoughts, flavors, or experiences..."></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Log Cigar</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h5>Smoked Cigars</h5>
+        </div>
+        <div class="card-body">
+            @if (cigars.Count == 0)
+            {
+                <p class="text-muted">No cigars logged yet. Light one up and add it to the log!</p>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Brand</th>
+                                <th>Size</th>
+                                <th>Rating</th>
+                                <th>Notes</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var cigar in cigars)
+                            {
+                                <tr>
+                                    <td>@cigar.DateSmoked.ToString("MMM dd, yyyy")</td>
+                                    <td><strong>@cigar.Brand</strong></td>
+                                    <td>@cigar.Size</td>
+                                    <td>
+                                        <span class="badge @GetRatingBadgeClass(cigar.Rating)">
+                                            @cigar.Rating/10
+                                        </span>
+                                    </td>
+                                    <td>@cigar.Notes</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-danger" 
+                                                @onclick="() => DeleteCigar(cigar.Id)">
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<Cigar> cigars = new();
+    private Cigar newCigar = new();
+    private string dateSmoked = DateTime.Today.ToString("yyyy-MM-dd");
+
+    protected override void OnInitialized()
+    {
+        LoadCigars();
+    }
+
+    private void LoadCigars()
+    {
+        cigars = CigarService.GetAllCigars();
+    }
+
+    private void AddCigar()
+    {
+        if (string.IsNullOrWhiteSpace(newCigar.Brand) || string.IsNullOrWhiteSpace(newCigar.Size))
+        {
+            return;
+        }
+
+        newCigar.DateSmoked = DateTime.Parse(dateSmoked);
+        CigarService.AddCigar(newCigar);
+        
+        // Reset form
+        newCigar = new();
+        dateSmoked = DateTime.Today.ToString("yyyy-MM-dd");
+        LoadCigars();
+    }
+
+    private void DeleteCigar(int id)
+    {
+        CigarService.DeleteCigar(id);
+        LoadCigars();
+    }
+
+    private string GetRatingBadgeClass(int rating)
+    {
+        return rating switch
+        {
+            >= 9 => "bg-success",
+            >= 7 => "bg-info",
+            >= 5 => "bg-warning",
+            _ => "bg-danger"
+        };
+    }
+}
