@@ -130,15 +130,15 @@
             userEmail = user.FindFirst("email")?.Value ?? user.FindFirst("name")?.Value ?? "User";
         }
         
-        LoadCigars();
+        await LoadCigarsAsync();
     }
 
-    private void LoadCigars()
+    private async Task LoadCigarsAsync()
     {
-        cigars = CigarService.GetAllCigars();
+        cigars = await CigarService.GetAllCigarsAsync();
     }
 
-    private void AddCigar()
+    private async Task AddCigar()
     {
         if (string.IsNullOrWhiteSpace(newCigar.Brand) || string.IsNullOrWhiteSpace(newCigar.Size))
         {
@@ -146,18 +146,18 @@
         }
 
         newCigar.DateSmoked = dateSmokedValue;
-        CigarService.AddCigar(newCigar);
+        await CigarService.AddCigarAsync(newCigar);
         
         // Reset form
         newCigar = new();
         dateSmokedValue = DateTime.Today;
-        LoadCigars();
+        await LoadCigarsAsync();
     }
 
-    private void DeleteCigar(int id)
+    private async Task DeleteCigar(int id)
     {
-        CigarService.DeleteCigar(id);
-        LoadCigars();
+        await CigarService.DeleteCigarAsync(id);
+        await LoadCigarsAsync();
     }
 
     private string GetRatingBadgeClass(int rating)

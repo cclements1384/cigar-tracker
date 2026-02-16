@@ -1,30 +1,41 @@
+using cigar_tracker.Data;
 using cigar_tracker.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace cigar_tracker.Services;
 
 public class CigarService
 {
-    private static List<Cigar> _cigars = new();
-    private static int _nextId = 1;
+    private readonly CigarTrackerDbContext _context;
 
-    public List<Cigar> GetAllCigars()
+    public CigarService(CigarTrackerDbContext context)
     {
-        return _cigars.OrderByDescending(c => c.DateSmoked).ToList();
+        _context = context;
     }
 
-    public void AddCigar(Cigar cigar)
+    public async Task<List<Cigar>> GetAllCigarsAsync()
     {
-        cigar.Id = _nextId++;
-        _cigars.Add(cigar);
+        return await _context.Cigars.OrderByDescending(c => c.DateSmoked).ToListAsync();
     }
 
-    public void DeleteCigar(int id)
+    public async Task AddCigarAsync(Cigar cigar)
     {
-        _cigars.RemoveAll(c => c.Id == id);
+        _context.Cigars.Add(cigar);
+        await _context.SaveChangesAsync();
     }
 
-    public Cigar? GetCigarById(int id)
+    public async Task DeleteCigarAsync(int id)
     {
-        return _cigars.FirstOrDefault(c => c.Id == id);
+        var cigar = await _context.Cigars.FindAsync(id);
+        if (cigar != null)
+        {
+            _context.Cigars.Remove(cigar);
+            await _context.SaveChangesAsync();
+        }
+    }
+
+    public async Task<Cigar?> GetCigarByIdAsync(int id)
+    {
+        return await _context.Cigars.FirstOrDefaultAsync(c => c.Id == id);
     }
 }

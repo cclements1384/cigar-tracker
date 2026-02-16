@@ -1,10 +1,12 @@
 using Azure.Identity;
 using Azure.Extensions.AspNetCore.Configuration.Secrets;
 using cigar_tracker.Components;
+using cigar_tracker.Data;
 using cigar_tracker.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -49,6 +51,12 @@ builder.Services.AddAuthentication(options =>
 
 // Add authorization
 builder.Services.AddAuthorization();
+
+// Add database context (PostgreSQL)
+var connectionString = builder.Configuration.GetConnectionString("CigarTrackerDb") 
+    ?? throw new InvalidOperationException("Connection string 'CigarTrackerDb' not found.");
+builder.Services.AddDbContext<CigarTrackerDbContext>(options =>
+    options.UseNpgsql(connectionString));
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
