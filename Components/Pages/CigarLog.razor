@@ -6,6 +6,7 @@
 @attribute [Authorize]
 @inject CigarService CigarService
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager Navigation
 
 <PageTitle>Cigar Log</PageTitle>
 
@@ -14,9 +15,7 @@
         <h1>🔥 Cigar Log</h1>
         <div>
             <span class="me-3">Welcome, @userEmail</span>
-            <form action="/logout" method="post" style="display: inline;">
-                <button type="submit" class="btn btn-sm btn-outline-danger">Logout</button>
-            </form>
+            <button class="btn btn-sm btn-outline-danger" @onclick="HandleLogout">Logout</button>
         </div>
     </div>
     
@@ -170,5 +169,14 @@
             >= 5 => "bg-warning",
             _ => "bg-danger"
         };
+    }
+
+    private async Task HandleLogout()
+    {
+        using (var client = new HttpClient())
+        {
+            await client.PostAsync(Navigation.Uri.Split("/cigar-log")[0] + "/logout", null);
+        }
+        Navigation.NavigateTo("/", forceLoad: true);
     }
 }

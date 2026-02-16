@@ -44,6 +44,7 @@ builder.Services.AddAuthentication(options =>
         options.SaveTokens = true;
         options.GetClaimsFromUserInfoEndpoint = true;
         options.TokenValidationParameters.NameClaimType = "name";
+        options.SignOutScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     });
 
 // Add authorization
@@ -86,7 +87,6 @@ app.MapPost("/login", async (HttpContext context) =>
 app.MapPost("/logout", async (HttpContext context) =>
 {
     await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-    await context.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme);
 });
 
 app.Run();
