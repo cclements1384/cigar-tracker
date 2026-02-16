@@ -79,8 +79,8 @@ app.MapRazorComponents<App>()
 // Add authentication endpoints for login/logout
 app.MapPost("/login", async (HttpContext context) =>
 {
-    await context.ChallengeAsync(OpenIdConnectDefaults.AuthenticationScheme, 
-        new AuthenticationProperties { RedirectUri = "/" });
+    await context.ChallengeAsync(OpenIdConnectDefaults.AuthenticationScheme);
+    context.Response.Redirect("/");
 });
 
 app.MapPost("/logout", async (HttpContext context) =>
