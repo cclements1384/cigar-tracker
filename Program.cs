@@ -54,6 +54,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddScoped<CigarService>();
+builder.Services.AddHttpClient<UpcService>();
 
 var app = builder.Build();
 

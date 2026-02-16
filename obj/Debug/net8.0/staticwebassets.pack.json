@@ -21,6 +21,10 @@
       "PackagePath": "staticwebassets/favicon.png"
     },
     {
+      "Id": "/home/ccleme/.openclaw/workspace/personal/cigar-tracker/wwwroot/images/cigar-hero.jpg",
+      "PackagePath": "staticwebassets/images/cigar-hero.jpg"
+    },
+    {
       "Id": "obj/Debug/net8.0/staticwebassets/msbuild.build.cigar-tracker.props",
       "PackagePath": "build\\cigar-tracker.props"
     },
