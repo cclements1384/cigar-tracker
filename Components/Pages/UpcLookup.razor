@@ -1,6 +1,9 @@
 @page "/upc-lookup"
+@rendermode InteractiveServer
 @using cigar_tracker.Models
 @using cigar_tracker.Services
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
 @inject UpcService UpcService
 
 <PageTitle>UPC Lookup - Cigar Tracker</PageTitle>

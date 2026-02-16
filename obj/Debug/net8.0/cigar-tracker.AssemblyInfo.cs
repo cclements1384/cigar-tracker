@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("cigar-tracker")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+52c7406796bf991300986687e3651ab49180b0bf")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7eed9eeeba97bca961a0f6aacf4f6c36c666890e")]
 [assembly: System.Reflection.AssemblyProductAttribute("cigar-tracker")]
 [assembly: System.Reflection.AssemblyTitleAttribute("cigar-tracker")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
