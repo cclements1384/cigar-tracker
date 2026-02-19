@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Cigar Tracker application now uses PostgreSQL with Entity Framework Core for data persistence. The database is hosted on Azure with a private endpoint.
+The Cigar Tracker application now uses **Azure SQL** with Entity Framework Core for data persistence.
 
 ## Connection String Configuration
 
@@ -12,11 +12,14 @@ The development connection string is in `appsettings.Development.json`:
 
 ```json
 "ConnectionStrings": {
-  "CigarTrackerDb": "Server=localhost;Port=5432;Database=cigar_tracker_dev;User Id=postgres;Password=password;"
+  "CigarTrackerDb": "Server=tcp:YOUR_AZURE_SQL_SERVER.database.windows.net,1433;Initial Catalog=cigar_tracker_dev;Persist Security Info=False;User ID=YOUR_USERNAME;Password=YOUR_PASSWORD;Encrypt=True;Connection Timeout=30;"
 }
 ```
 
-Update this with your local PostgreSQL credentials.
+Update the placeholders:
+- `YOUR_AZURE_SQL_SERVER`: Your Azure SQL server name (e.g., `myserver`)
+- `YOUR_USERNAME`: Your SQL login (e.g., `sqladmin`)
+- `YOUR_PASSWORD`: Your SQL password
 
 ### Production (Azure)
 
@@ -24,7 +27,7 @@ In production, the connection string is retrieved from **Azure Key Vault** under
 
 To configure:
 1. Set the `KeyVaultName` in `appsettings.json` (e.g., `"kv-cigar-tracker"`)
-2. Add the PostgreSQL connection string to Azure Key Vault with the name `CigarTrackerDb`
+2. Add the Azure SQL connection string to Azure Key Vault with the name `CigarTrackerDb`
 
 The application will automatically use the Azure Key Vault configuration in non-development environments.
 
@@ -62,28 +65,29 @@ dotnet ef migrations list
 The initial migration `InitialCreate` creates the `Cigars` table with the following schema:
 
 - `Id` (int, Primary Key, Auto-generated)
-- `Brand` (varchar(255), Required)
-- `Size` (varchar(100), Required)
+- `Brand` (nvarchar(255), Required)
+- `Size` (nvarchar(100), Required)
 - `Rating` (int, Required)
-- `DateSmoked` (timestamp, Required)
-- `Notes` (varchar(1000), Optional)
+- `DateSmoked` (datetime2, Required)
+- `Notes` (nvarchar(1000), Optional)
 
-## PostgreSQL Connection Notes
+## Azure SQL Connection Notes
 
-- **Host**: Azure-hosted PostgreSQL (private endpoint)
-- **Port**: 5432
-- **SSL**: Verify that your connection string includes SSL requirements if needed
-- **Authentication**: Use connection string or MSI (Managed Identity) in Azure
+- **Host**: Azure SQL Database endpoint (e.g., `myserver.database.windows.net`)
+- **Port**: 1433 (default MSSQL port)
+- **Encryption**: Always enabled (Encrypt=True in connection string)
+- **Authentication**: SQL Server authentication or Azure AD (Managed Identity in production)
 
 ## Troubleshooting
 
 ### Connection Errors
 
 If you get connection errors:
-1. Verify the PostgreSQL server is running
+1. Verify the Azure SQL server is running and accessible
 2. Check the connection string in `appsettings.json` or `appsettings.Development.json`
-3. Ensure the database user has permissions to create tables (for migrations)
-4. For Azure: Verify the private endpoint is accessible from your network
+3. Ensure the SQL login has permissions to create databases and tables
+4. For Azure: Verify firewall rules allow your IP address
+5. Verify the database exists on the Azure SQL server
 
 ### Migration Issues
 

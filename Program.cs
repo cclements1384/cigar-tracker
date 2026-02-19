@@ -52,11 +52,11 @@ builder.Services.AddAuthentication(options =>
 // Add authorization
 builder.Services.AddAuthorization();
 
-// Add database context (PostgreSQL)
+// Add database context (Azure SQL)
 var connectionString = builder.Configuration.GetConnectionString("CigarTrackerDb") 
     ?? throw new InvalidOperationException("Connection string 'CigarTrackerDb' not found.");
 builder.Services.AddDbContext<CigarTrackerDbContext>(options =>
-    options.UseNpgsql(connectionString));
+    options.UseSqlServer(connectionString));
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
