@@ -53,10 +53,10 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization();
 
 // Add database context (Azure SQL)
-var connectionString = builder.Configuration.GetConnectionString("CigarTrackerDb") 
-    ?? throw new InvalidOperationException("Connection string 'CigarTrackerDb' not found.");
-builder.Services.AddDbContext<CigarTrackerDbContext>(options =>
-    options.UseSqlServer(connectionString));
+//var connectionString = builder.Configuration.GetConnectionString("CigarTrackerDb") 
+//    ?? throw new InvalidOperationException("Connection string 'CigarTrackerDb' not found.");
+//builder.Services.AddDbContext<CigarTrackerDbContext>(options =>
+//    options.UseSqlServer(connectionString));
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
