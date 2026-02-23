@@ -4,6 +4,8 @@
 @using cigar_tracker.Services
 @using Microsoft.AspNetCore.Authorization
 
+@attribute [Authorize]
+
 @inject CigarService CigarService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager Navigation
