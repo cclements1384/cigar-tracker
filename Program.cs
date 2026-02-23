@@ -67,10 +67,17 @@ builder.Services.AddHttpClient<UpcService>();
 var app = builder.Build();
 
 // Apply any pending migrations on startup
-using (var scope = app.Services.CreateScope())
+try
 {
+    using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<CigarTrackerDbContext>();
     db.Database.Migrate();
+}
+catch (Exception ex)
+{
+    var logger = app.Services.GetRequiredService<ILoggerFactory>()
+        .CreateLogger("StartupMigration");
+    logger.LogError(ex, "Database migration failed during startup. Application will continue running.");
 }
 
 
