@@ -67,7 +67,7 @@ if (!string.IsNullOrEmpty(storageConnectionString))
 else
 {
     // Use DefaultAzureCredential for managed identity / Azure authentication
-    var storageAccountUri = builder.Configuration["AzureStorageUri"] ?? "https://YOUR_STORAGE_ACCOUNT.blob.core.windows.net";
+    var storageAccountUri = builder.Configuration["AzureStorageUri"];
     builder.Services.AddSingleton(new Azure.Storage.Blobs.BlobServiceClient(new Uri(storageAccountUri), new DefaultAzureCredential()));
 }
 builder.Services.AddScoped<AzureStorageService>();
