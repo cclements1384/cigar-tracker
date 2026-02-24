@@ -69,7 +69,8 @@ public class AzureStorageService
     {
         try
         {
-            await _containerClient.CreateIfNotExistsAsync(PublicAccessType.Blob);
+            await _containerClient.CreateIfNotExistsAsync(
+                Azure.Storage.Blobs.Models.PublicAccessType.None);
         }
         catch (Exception ex)
         {
