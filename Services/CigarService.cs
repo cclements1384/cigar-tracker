@@ -18,6 +18,14 @@ public class CigarService
         return await _context.Cigars.OrderByDescending(c => c.DateSmoked).ToListAsync();
     }
 
+    public async Task<List<Cigar>> GetCigarsByUserAsync(string userEmail)
+    {
+        return await _context.Cigars
+            .Where(c => c.LoggedInUser == userEmail)
+            .OrderByDescending(c => c.DateSmoked)
+            .ToListAsync();
+    }
+
     public async Task AddCigarAsync(Cigar cigar)
     {
         _context.Cigars.Add(cigar);

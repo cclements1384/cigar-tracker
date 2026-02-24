@@ -83,7 +83,6 @@
                                 <th>Brand</th>
                                 <th>Size</th>
                                 <th>Rating</th>
-                                <th>Logged By</th>
                                 <th>Notes</th>
                                 <th></th>
                             </tr>
@@ -100,7 +99,6 @@
                                             @cigar.Rating/10
                                         </span>
                                     </td>
-                                    <td><small>@cigar.LoggedInUser</small></td>
                                     <td>@cigar.Notes</td>
                                     <td>
                                         <button class="btn btn-sm btn-danger" 
@@ -139,7 +137,7 @@
 
     private async Task LoadCigarsAsync()
     {
-        cigars = await CigarService.GetAllCigarsAsync();
+        cigars = await CigarService.GetCigarsByUserAsync(userEmail);
     }
 
     private async Task AddCigar()
