@@ -58,6 +58,20 @@ var connectionString = builder.Configuration.GetConnectionString("CigarTrackerDb
 builder.Services.AddDbContext<CigarTrackerDbContext>(options =>
     options.UseSqlServer(connectionString));
 
+// Add Azure Storage services
+var storageConnectionString = builder.Configuration.GetConnectionString("AzureStorageConnectionString");
+if (!string.IsNullOrEmpty(storageConnectionString))
+{
+    builder.Services.AddSingleton(new Azure.Storage.Blobs.BlobServiceClient(storageConnectionString));
+}
+else
+{
+    // Use DefaultAzureCredential for managed identity / Azure authentication
+    var storageAccountUri = builder.Configuration["AzureStorageUri"] ?? "https://YOUR_STORAGE_ACCOUNT.blob.core.windows.net";
+    builder.Services.AddSingleton(new Azure.Storage.Blobs.BlobServiceClient(new Uri(storageAccountUri), new DefaultAzureCredential()));
+}
+builder.Services.AddScoped<AzureStorageService>();
+
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
@@ -66,18 +80,21 @@ builder.Services.AddHttpClient<UpcService>();
 
 var app = builder.Build();
 
-// Apply any pending migrations on startup
+// Apply any pending migrations on startup and initialize Azure Storage
 try
 {
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<CigarTrackerDbContext>();
     db.Database.Migrate();
+
+    var azureStorage = scope.ServiceProvider.GetRequiredService<AzureStorageService>();
+    await azureStorage.EnsureContainerExistsAsync();
 }
 catch (Exception ex)
 {
     var logger = app.Services.GetRequiredService<ILoggerFactory>()
         .CreateLogger("StartupMigration");
-    logger.LogError(ex, "Database migration failed during startup. Application will continue running.");
+    logger.LogError(ex, "Database migration or Azure Storage initialization failed during startup. Application will continue running.");
 }
 
 

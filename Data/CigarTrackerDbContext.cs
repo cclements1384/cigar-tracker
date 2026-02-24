@@ -25,6 +25,9 @@ public class CigarTrackerDbContext : DbContext
             entity.Property(e => e.DateSmoked).IsRequired();
             entity.Property(e => e.Notes).HasMaxLength(1000);
             entity.Property(e => e.LoggedInUser).IsRequired().HasMaxLength(255);
+            entity.Property(e => e.ImageUrl).HasMaxLength(2048);
+            entity.Property(e => e.ImageFileName).HasMaxLength(255);
+            entity.Property(e => e.ImageUploadedAt);
         });
     }
 }
