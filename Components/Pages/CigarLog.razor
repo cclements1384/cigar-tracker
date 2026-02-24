@@ -63,7 +63,7 @@
                 <div class="mb-3">
                     <label for="image" class="form-label">Upload Image (Optional)</label>
                     <input type="file" class="form-control" id="image" 
-                           accept="image/*" />
+                           accept="image/*" OnChange="OnImageSelected" />
                     @if (selectedFileName != null)
                     {
                         <small class="text-muted d-block mt-2">Selected: @selectedFileName (@FormatFileSize(imageFileSize))</small>
