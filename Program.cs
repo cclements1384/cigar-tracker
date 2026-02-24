@@ -59,17 +59,15 @@ builder.Services.AddDbContext<CigarTrackerDbContext>(options =>
     options.UseSqlServer(connectionString));
 
 // Add Azure Storage services
-var storageConnectionString = builder.Configuration.GetConnectionString("AzureStorageConnectionString");
-if (!string.IsNullOrEmpty(storageConnectionString))
+var storageAccountUri = builder.Configuration.GetConnectionString("AzureStorageUri");
+if (!string.IsNullOrEmpty(storageAccountUri))
 {
-    builder.Services.AddSingleton(new Azure.Storage.Blobs.BlobServiceClient(storageConnectionString));
+    //builder.Services.AddSingleton(new Azure.Storage.Blobs.BlobServiceClient(storageConnectionString));
+    builder.Services.AddSingleton(new Azure.Storage.Blobs.BlobServiceClient(
+        new Uri(storageAccountUri), 
+        new DefaultAzureCredential()));
 }
-else
-{
-    // Use DefaultAzureCredential for managed identity / Azure authentication
-    var storageAccountUri = builder.Configuration["AzureStorageUri"];
-    builder.Services.AddSingleton(new Azure.Storage.Blobs.BlobServiceClient(new Uri(storageAccountUri), new DefaultAzureCredential()));
-}
+
 builder.Services.AddScoped<AzureStorageService>();
 
 // Add services to the container.
