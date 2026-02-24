@@ -1,25 +1,31 @@
 {
   "format": 1,
   "restore": {
-    "/home/ccleme/.openclaw/workspace/personal/cigar-tracker/cigar-tracker.csproj": {}
+    "C:\\Users\\jcleme\\Source\\repos\\cigar-tracker\\cigar-tracker.csproj": {}
   },
   "projects": {
-    "/home/ccleme/.openclaw/workspace/personal/cigar-tracker/cigar-tracker.csproj": {
+    "C:\\Users\\jcleme\\Source\\repos\\cigar-tracker\\cigar-tracker.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/ccleme/.openclaw/workspace/personal/cigar-tracker/cigar-tracker.csproj",
+        "projectUniqueName": "C:\\Users\\jcleme\\Source\\repos\\cigar-tracker\\cigar-tracker.csproj",
         "projectName": "cigar-tracker",
-        "projectPath": "/home/ccleme/.openclaw/workspace/personal/cigar-tracker/cigar-tracker.csproj",
-        "packagesPath": "/home/ccleme/.nuget/packages/",
-        "outputPath": "/home/ccleme/.openclaw/workspace/personal/cigar-tracker/obj/",
+        "projectPath": "C:\\Users\\jcleme\\Source\\repos\\cigar-tracker\\cigar-tracker.csproj",
+        "packagesPath": "C:\\Users\\jcleme\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\jcleme\\Source\\repos\\cigar-tracker\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "/home/ccleme/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\jcleme\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -32,7 +38,13 @@
           "warnAsError": [
             "NU1605"
           ]
-        }
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net8.0": {
@@ -58,6 +70,10 @@
               "target": "Package",
               "version": "[8.0.0, )"
             },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
             "Microsoft.EntityFrameworkCore.Tools": {
               "target": "Package",
               "version": "[8.0.0, )"
@@ -65,10 +81,6 @@
             "Microsoft.IdentityModel.Protocols.OpenIdConnect": {
               "target": "Package",
               "version": "[7.0.3, )"
-            },
-            "Npgsql.EntityFrameworkCore.PostgreSQL": {
-              "target": "Package",
-              "version": "[8.0.0, )"
             }
           },
           "imports": [
@@ -90,7 +102,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/8.0.121/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.311/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
