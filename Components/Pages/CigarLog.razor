@@ -3,6 +3,7 @@
 @using cigar_tracker.Models
 @using cigar_tracker.Services
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Forms
 @using System.IO
 @attribute [Authorize]
 
@@ -62,8 +63,8 @@
 
                 <div class="mb-3">
                     <label for="image" class="form-label">Upload Image (Optional)</label>
-                    <input type="file" class="form-control" id="image" 
-                           accept="image/*" OnChange="OnImageSelected" />
+                    <InputFile class="form-control" id="image" 
+                               accept="image/*" OnChange="OnImageSelected" />
                     @if (selectedFileName != null)
                     {
                         <small class="text-muted d-block mt-2">Selected: @selectedFileName (@FormatFileSize(imageFileSize))</small>
