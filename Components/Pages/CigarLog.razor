@@ -3,12 +3,13 @@
 @using cigar_tracker.Models
 @using cigar_tracker.Services
 @using Microsoft.AspNetCore.Authorization
-
+@using System.IO
 @attribute [Authorize]
 
 @inject CigarService CigarService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager Navigation
+@inject IJSRuntime JS
 
 <PageTitle>Cigar Log</PageTitle>
 
@@ -59,7 +60,35 @@
                               @bind="newCigar.Notes" placeholder="Any thoughts, flavors, or experiences..."></textarea>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Log Cigar</button>
+                <div class="mb-3">
+                    <label for="image" class="form-label">Upload Image (Optional)</label>
+                    <input type="file" class="form-control" id="image" 
+                           @onchange="OnImageSelected" accept="image/*" />
+                    @if (selectedFileName != null)
+                    {
+                        <small class="text-muted d-block mt-2">Selected: @selectedFileName (@FormatFileSize(imageFileSize))</small>
+                    }
+                    @if (imagePreview != null)
+                    {
+                        <div class="mt-2">
+                            <img src="@imagePreview" class="img-thumbnail" style="max-width: 200px;" alt="Preview" />
+                        </div>
+                    }
+                </div>
+
+                <button type="submit" class="btn btn-primary" disabled="@isUploading">
+                    @if (isUploading)
+                    {
+                        <span>
+                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            Uploading...
+                        </span>
+                    }
+                    else
+                    {
+                        <span>Log Cigar</span>
+                    }
+                </button>
             </form>
         </div>
     </div>
@@ -79,6 +108,7 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
+                                <th>Image</th>
                                 <th>Date</th>
                                 <th>Brand</th>
                                 <th>Size</th>
@@ -91,6 +121,17 @@
                             @foreach (var cigar in cigars)
                             {
                                 <tr>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(cigar.ImageUrl))
+                                        {
+                                            <img src="@cigar.ImageUrl" class="img-thumbnail" style="max-width: 80px; cursor: pointer;" 
+                                                 @onclick="() => OpenImageModal(cigar.ImageUrl)" alt="Cigar image" />
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">No image</span>
+                                        }
+                                    </td>
                                     <td>@cigar.DateSmoked.ToString("MMM dd, yyyy")</td>
                                     <td><strong>@cigar.Brand</strong></td>
                                     <td>@cigar.Size</td>
@@ -116,28 +157,52 @@
     </div>
 </div>
 
+<!-- Image Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Cigar Image</h5>
+                <button type="button" class="btn-close" @onclick="CloseImageModal"></button>
+            </div>
+            <div class="modal-body text-center">
+                @if (modalImageUrl != null)
+                {
+                    <img src="@modalImageUrl" class="img-fluid" alt="Cigar image" />
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
 @code {
     private List<Cigar> cigars = new();
     private Cigar newCigar = new();
     private DateTime dateSmokedValue = DateTime.Today;
     private string userEmail = "User";
+    private IBrowserFile? selectedFile;
+    private string? selectedFileName;
+    private long imageFileSize;
+    private string? imagePreview;
+    private bool isUploading = false;
+    private string? modalImageUrl;
 
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
-        
+
         if (user?.Identity?.IsAuthenticated ?? false)
         {
             userEmail = user.FindFirst("email")?.Value ?? user.FindFirst("name")?.Value ?? "User";
         }
-        
+
         await LoadCigarsAsync();
     }
 
     private async Task LoadCigarsAsync()
     {
-        cigars = await CigarService.GetAllCigarsAsync();
+        cigars = await CigarService.GetCigarsByUserAsync(userEmail);
     }
 
     private async Task AddCigar()
@@ -147,19 +212,109 @@
             return;
         }
 
-        newCigar.DateSmoked = dateSmokedValue;
-        await CigarService.AddCigarAsync(newCigar);
-        
-        // Reset form
-        newCigar = new();
-        dateSmokedValue = DateTime.Today;
-        await LoadCigarsAsync();
+        isUploading = true;
+        try
+        {
+            newCigar.DateSmoked = dateSmokedValue;
+            newCigar.LoggedInUser = userEmail;
+
+            // Handle image upload if file is selected
+            if (selectedFile != null)
+            {
+                using var stream = selectedFile.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024); // 5 MB max
+                await CigarService.AddCigarWithImageAsync(newCigar, stream, selectedFile.Name, userEmail);
+            }
+            else
+            {
+                await CigarService.AddCigarAsync(newCigar);
+            }
+
+            // Reset form
+            newCigar = new();
+            dateSmokedValue = DateTime.Today;
+            selectedFile = null;
+            selectedFileName = null;
+            imagePreview = null;
+            imageFileSize = 0;
+            await LoadCigarsAsync();
+        }
+        finally
+        {
+            isUploading = false;
+        }
+    }
+
+    private async Task OnImageSelected(InputFileChangeEventArgs e)
+    {
+        selectedFile = e.File;
+        selectedFileName = e.File.Name;
+        imageFileSize = e.File.Size;
+
+        // Create preview
+        try
+        {
+            // Validate file size (5 MB max)
+            if (e.File.Size > 5 * 1024 * 1024)
+            {
+                await JS.InvokeVoidAsync("alert", "Image size must be less than 5 MB");
+                ClearImage();
+                return;
+            }
+
+            using var stream = e.File.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024);
+            using var memoryStream = new MemoryStream();
+            await stream.CopyToAsync(memoryStream);
+            byte[] imageBytes = memoryStream.ToArray();
+            imagePreview = $"data:{e.File.ContentType};base64,{Convert.ToBase64String(imageBytes)}";
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", $"Error loading image: {ex.Message}");
+            ClearImage();
+        }
+    }
+
+    private void ClearImage()
+    {
+        selectedFile = null;
+        selectedFileName = null;
+        imagePreview = null;
+        imageFileSize = 0;
     }
 
     private async Task DeleteCigar(int id)
     {
-        await CigarService.DeleteCigarAsync(id);
-        await LoadCigarsAsync();
+        bool confirmed = await JS.InvokeAsync<bool>("confirm", "Are you sure you want to delete this cigar entry?");
+        if (confirmed)
+        {
+            await CigarService.DeleteCigarWithImageAsync(id);
+            await LoadCigarsAsync();
+        }
+    }
+
+    private void OpenImageModal(string imageUrl)
+    {
+        modalImageUrl = imageUrl;
+        // Show modal using Bootstrap (you can also use Blazor's JS interop)
+        JS.InvokeVoidAsync("bootstrapInterop.showModal", "imageModal");
+    }
+
+    private void CloseImageModal()
+    {
+        modalImageUrl = null;
+    }
+
+    private string FormatFileSize(long bytes)
+    {
+        string[] sizes = { "B", "KB", "MB", "GB" };
+        double len = bytes;
+        int order = 0;
+        while (len >= 1024 && order < sizes.Length - 1)
+        {
+            order++;
+            len = len / 1024;
+        }
+        return $"{len:F1} {sizes[order]}";
     }
 
     private string GetRatingBadgeClass(int rating)

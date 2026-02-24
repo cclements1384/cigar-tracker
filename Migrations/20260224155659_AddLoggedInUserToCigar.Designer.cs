@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using cigar_tracker.Data;
 
@@ -11,9 +12,11 @@ using cigar_tracker.Data;
 namespace cigartracker.Migrations
 {
     [DbContext(typeof(CigarTrackerDbContext))]
-    partial class CigarTrackerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260224155659_AddLoggedInUserToCigar")]
+    partial class AddLoggedInUserToCigar
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,17 +40,6 @@ namespace cigartracker.Migrations
 
                     b.Property<DateTime>("DateSmoked")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("ImageFileName")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<DateTime?>("ImageUploadedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ImageUrl")
-                        .HasMaxLength(2048)
-                        .HasColumnType("nvarchar(2048)");
 
                     b.Property<string>("LoggedInUser")
                         .IsRequired()
