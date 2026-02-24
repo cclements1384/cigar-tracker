@@ -86,7 +86,9 @@ try
     db.Database.Migrate();
 
     var azureStorage = scope.ServiceProvider.GetRequiredService<AzureStorageService>();
-    await azureStorage.EnsureContainerExistsAsync();
+    await azureStorage.EnsureContainerExistsAsync(
+		Azure.Storage.Blobs.Models.PublicAccessType.None);
+	);
 }
 catch (Exception ex)
 {
