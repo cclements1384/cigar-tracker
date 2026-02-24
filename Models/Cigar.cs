@@ -8,4 +8,5 @@ public class Cigar
     public int Rating { get; set; } // 1-10 scale
     public DateTime DateSmoked { get; set; }
     public string Notes { get; set; } = string.Empty;
+    public string LoggedInUser { get; set; } = string.Empty; // Email of user who logged this cigar
 }

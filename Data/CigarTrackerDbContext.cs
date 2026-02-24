@@ -24,6 +24,7 @@ public class CigarTrackerDbContext : DbContext
             entity.Property(e => e.Rating).IsRequired();
             entity.Property(e => e.DateSmoked).IsRequired();
             entity.Property(e => e.Notes).HasMaxLength(1000);
+            entity.Property(e => e.LoggedInUser).IsRequired().HasMaxLength(255);
         });
     }
 }
